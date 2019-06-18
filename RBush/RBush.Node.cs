@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace RBush
 {
 	public partial class RBush<T>
 	{
-		internal class Node : ISpatialData
+		internal class Node : ISpatialData, IEnumerable<ISpatialData>
 		{
 			private Envelope _envelope;
 
@@ -28,10 +29,20 @@ namespace RBush
 				_envelope = GetEnclosingEnvelope(Children);
 			}
 
+			#region IEnumerable
+
+			public IEnumerator<ISpatialData> GetEnumerator() => Children.GetEnumerator();
+
+			IEnumerator IEnumerable.GetEnumerator() => Children.GetEnumerator();
+
+			#endregion
+
 			public List<ISpatialData> Children { get; }
 			public int Height { get; }
 			public bool IsLeaf => Height == 1;
 			public ref readonly Envelope Envelope => ref _envelope;
+
+
 		}
 	}
 }

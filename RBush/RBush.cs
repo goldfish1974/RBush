@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace RBush
 {
-	public partial class RBush<T> : ISpatialDatabase<T>, ISpatialIndex<T> where T : ISpatialData
+	public partial class RBush<T> : IEnumerable<ISpatialData>, ISpatialDatabase<T>, ISpatialIndex<T> where T : ISpatialData
 	{
 		private const int DefaultMaxEntries = 9;
 		private const int MinimumMaxEntries = 4;
@@ -41,7 +42,7 @@ namespace RBush
 		{
 			return DoSearch(boundingBox).Select(x => (T)x.Peek()).ToList();
 		}
-
+		
 		public void Insert(T item)
 		{
 			Insert(item, this.root.Height);
@@ -113,5 +114,11 @@ namespace RBush
 				}
 			}
 		}
+
+		#region IEnumerable<ISpatialData>
+		public IEnumerator<ISpatialData> GetEnumerator() => root.GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() => root.GetEnumerator();
+		#endregion
 	}
 }
